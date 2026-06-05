@@ -234,7 +234,7 @@ function initValidationDashboard() {
     { text: '[SUCCESS] HIL CONFORMANCE TEST COMPLETED SUCCESSFULLY. STATUS: PASS.', class: 'log-success', progress: 100, status: 'SYSTEM ONLINE', statusClass: 'active', rssi: -38, snr: 36, per: 0.0, delay: 400 }
   ];
 
-  const TEST_RUN_DURATION_MS = 60000;
+  const TEST_RUN_DURATION_MS = 39000;
   const baseSequenceDuration = simulationSequence.reduce((total, step) => total + (step.delay || 120), 0);
   const delayScale = TEST_RUN_DURATION_MS / baseSequenceDuration;
 
@@ -318,40 +318,110 @@ function initValidationDashboard() {
 
     let currentIndex = 0;
 
-    function printNextLine() {
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function updateDashboardState(step) {
+      if (!step) return;
+
+      progressBar.style.width = `${step.progress}%`;
+      statusDot.className = `dash-status-dot ${step.statusClass || 'testing'}`;
+      statusText.textContent = step.status;
+
+      if (step.rssi !== undefined) targetMetrics.rssi = step.rssi;
+      if (step.snr !== undefined) targetMetrics.snr = step.snr;
+      if (step.per !== undefined) targetMetrics.per = step.per;
+    }
+
+    function appendLogLine(step) {
+      const logDiv = document.createElement('div');
+      logDiv.className = `log-line ${step.class || ''}`;
+      logDiv.textContent = step.text;
+      termLogs.insertBefore(logDiv, cursor);
+      termLogs.scrollTop = termLogs.scrollHeight;
+    }
+
+    function getBurstSize() {
+      const roll = Math.random();
+      if (roll > 0.84) return 3;
+      if (roll > 0.48) return 2;
+      return 1;
+    }
+
+    function getScaledStepDelay(step) {
+      const naturalDelay = (step.delay || 120) * delayScale;
+      const jitter = randomBetween(0.72, 1.34);
+      return naturalDelay * jitter;
+    }
+
+    function getPauseAfterBurst(lastStep, nextStep, burstSize) {
+      let pause = 0;
+
+      if (nextStep && nextStep.status !== lastStep.status && Math.random() < 0.55) {
+        pause += randomBetween(650, 1500);
+      }
+
+      const isHardwareWait = lastStep.text.includes('Tuning RF synthesizer')
+        || lastStep.text.includes('Energizing Device')
+        || lastStep.text.includes('Clearing target flash')
+        || lastStep.text.includes('Flashing golden firmware')
+        || lastStep.text.includes('coex stress')
+        || lastStep.text.includes('path loss sweep')
+        || lastStep.text.includes('Stopping Docker');
+
+      if (isHardwareWait && Math.random() < 0.45) {
+        pause += randomBetween(1400, 3200);
+      } else if (Math.random() < 0.08) {
+        pause += randomBetween(700, 1800);
+      }
+
+      if (burstSize > 1 && Math.random() < 0.45) {
+        pause += randomBetween(220, 700);
+      }
+
+      return pause;
+    }
+
+    function printBurst() {
       if (currentIndex >= simulationSequence.length) {
         runBtn.disabled = false;
         return;
       }
 
-      const step = simulationSequence[currentIndex];
+      const burstStartIndex = currentIndex;
+      let burstSize = getBurstSize();
+      let maxBurstSize = 1;
+      let accumulatedDelay = 0;
 
-      // Update progress
-      progressBar.style.width = `${step.progress}%`;
+      for (let i = 1; i < burstSize && burstStartIndex + i < simulationSequence.length; i++) {
+        if (simulationSequence[burstStartIndex + i].status !== simulationSequence[burstStartIndex].status) break;
+        maxBurstSize++;
+      }
 
-      // Update status
-      statusDot.className = `dash-status-dot ${step.statusClass || 'testing'}`;
-      statusText.textContent = step.status;
+      burstSize = Math.max(1, Math.min(maxBurstSize, simulationSequence.length - currentIndex));
 
-      // Update target metrics
-      if (step.rssi !== undefined) targetMetrics.rssi = step.rssi;
-      if (step.snr !== undefined) targetMetrics.snr = step.snr;
-      if (step.per !== undefined) targetMetrics.per = step.per;
+      for (let burstOffset = 0; burstOffset < burstSize; burstOffset++) {
+        const step = simulationSequence[currentIndex + burstOffset];
+        accumulatedDelay += getScaledStepDelay(step);
 
-      // Create new line div and insert it before the cursor
-      const logDiv = document.createElement('div');
-      logDiv.className = `log-line ${step.class || ''}`;
-      logDiv.textContent = step.text;
-      termLogs.insertBefore(logDiv, cursor);
+        setTimeout(() => {
+          updateDashboardState(step);
+          appendLogLine(step);
+        }, burstOffset === 0 ? 0 : randomBetween(35, 130) * burstOffset);
+      }
 
-      // Scroll to bottom
-      termLogs.scrollTop = termLogs.scrollHeight;
+      currentIndex += burstSize;
 
-      currentIndex++;
-      setTimeout(printNextLine, (step.delay || 120) * delayScale);
+      const lastStep = simulationSequence[currentIndex - 1];
+      const nextStep = simulationSequence[currentIndex];
+      const realismPause = getPauseAfterBurst(lastStep, nextStep, burstSize);
+      const nextDelay = Math.max(180, accumulatedDelay + realismPause);
+
+      setTimeout(printBurst, nextDelay);
     }
 
-    printNextLine();
+    printBurst();
   }
 
   runBtn.addEventListener('click', runSimulatedTest);
