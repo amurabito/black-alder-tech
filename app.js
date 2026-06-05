@@ -175,90 +175,99 @@ function initValidationDashboard() {
     {
       progress: 10,
       status: 'testing',
-      statusMsg: 'INITIALIZING',
-      log: '[INFO] Powering up automated HIL validation platform (v2.8.4)...',
-      logClass: '',
-      metrics: { rssi: '-95 dBm', snr: '8 dB', per: '24.5%' }
+      statusMsg: 'SETUP CONTAINER',
+      log: [
+        { text: '[INFO] Initializing HIL test controller workspace...', class: '' },
+        { text: '[INFO] Spinning up Docker service container: black-alder-hil-runner:v3.2.1', class: '' },
+        { text: '[SUCCESS] Docker container \'hil_runner_084x\' created (sha256:8f410c9d...)', class: 'log-success' },
+        { text: '[INFO] Volume mount: host:/opt/hil/config -> container:/etc/hil/config (ro)', class: '' },
+        { text: '[INFO] Attaching container to overlay network \'hil_lan_bridge\' (172.20.0.0/16)', class: '' }
+      ],
+      metrics: { rssi: '-- dBm', snr: '-- dB', per: '--%' }
     },
     {
-      progress: 20,
+      progress: 25,
       status: 'testing',
-      statusMsg: 'LOCKING SYNTH',
-      log: '[INFO] Tuning RF synthesizer local oscillators to carrier 2.445 GHz...',
-      logClass: '',
-      metrics: { rssi: '-88 dBm', snr: '12 dB', per: '18.2%' }
-    },
-    {
-      progress: 30,
-      status: 'testing',
-      statusMsg: 'LOCKING SYNTH',
-      log: '[SUCCESS] Frequency synthesizer phase-locked loop (PLL) verified. [Err < 2 ppm]',
-      logClass: 'log-success',
-      metrics: { rssi: '-85 dBm', snr: '15 dB', per: '12.0%' }
+      statusMsg: 'LOCKING RF SYNTH',
+      log: [
+        { text: '[INFO] Connecting via VISA interface to local RF instrumentation...', class: '' },
+        { text: '[INFO] Keysight MXG: Tuning and locking local oscillators to 2.445 GHz...', class: '' },
+        { text: '[SUCCESS] RF instrument phase-locked loop (PLL) verified. [Err < 1.5 ppm]', class: 'log-success' },
+        { text: '[INFO] Powering on Device Under Test (DUT-084X) via PoE injector...', class: '' }
+      ],
+      metrics: { rssi: '-105 dBm', snr: '2 dB', per: '100%' }
     },
     {
       progress: 40,
       status: 'testing',
-      statusMsg: 'PAIRING DUT',
-      log: '[WARN] Attenuators adjusting path loss to simulate high-interference indoor environment...',
-      logClass: 'log-warn',
-      metrics: { rssi: '-92 dBm', snr: '6 dB', per: '35.4%' }
+      statusMsg: 'FLASHING FIRMWARE',
+      log: [
+        { text: '[INFO] Uploading golden image firmware (v4.0.1-rc3) to SoC flash over JTAG...', class: '' },
+        { text: '[SUCCESS] Firmware write and verify complete. Booting DUT...', class: 'log-success' },
+        { text: '[INFO] UART console output matched: \'System Ready; L2/L3 stack initialized\'', class: '' }
+      ],
+      metrics: { rssi: '-98 dBm', snr: '5 dB', per: '100%' }
     },
     {
-      progress: 50,
+      progress: 55,
       status: 'testing',
-      statusMsg: 'PAIRING DUT',
-      log: '[INFO] Initializing BLE 5.3 advertisement sweep on channels 37, 38, 39...',
-      logClass: '',
-      metrics: { rssi: '-91 dBm', snr: '7 dB', per: '31.2%' }
-    },
-    {
-      progress: 60,
-      status: 'testing',
-      statusMsg: 'PAIRING DUT',
-      log: '[SUCCESS] Connected to wireless Device Under Test (DUT-084X). Handshake completed.',
-      logClass: 'log-success',
+      statusMsg: 'PRE-COMPLIANCE RUN',
+      log: [
+        { text: '[INFO] Starting pre-conformance readiness sweep for regional domains (FCC/ETSI)...', class: '' },
+        { text: '[INFO] Auditing channel selection algorithms and active DFS detection latency...', class: '' },
+        { text: '[SUCCESS] DFS channel switch announcement (CSA) compliance validated. [Latency < 180ms]', class: 'log-success' },
+        { text: '[INFO] Simulating WFA-conformance Layer 2 association checks (WPA3-SAE, 802.11ax)...', class: '' },
+        { text: '[SUCCESS] Simulated association complete. IP: 172.20.10.15 [DHCP success]', class: 'log-success' }
+      ],
       metrics: { rssi: '-42 dBm', snr: '34 dB', per: '0.01%' }
     },
     {
       progress: 70,
       status: 'testing',
-      statusMsg: 'VALIDATING',
-      log: '[INFO] Initiating packet injection stress-test (100k packets, PRBS9 payload)...',
-      logClass: '',
-      metrics: { rssi: '-44 dBm', snr: '31 dB', per: '0.02%' }
+      statusMsg: 'COEX & OTA RUN',
+      log: [
+        { text: '[INFO] Running WLAN/BT coexistence (coex) stress-test [WLAN TX 80% duty, BT RX]', class: '' },
+        { text: '[WARN] Coex interference detected: Bluetooth packet loss increased to 4.2%', class: 'log-warn' },
+        { text: '[INFO] Applying coex mitigation profile (AFH enabled, priority-pinning active)...', class: '' },
+        { text: '[SUCCESS] Coexistence validated. Bluetooth packet error rate stabilized.', class: 'log-success' },
+        { text: '[INFO] Simulating OTA radiated path loss: ramping attenuators from 10dB to 60dB...', class: '' }
+      ],
+      metrics: { rssi: '-85 dBm', snr: '12 dB', per: '4.2%' }
     },
     {
-      progress: 80,
+      progress: 85,
       status: 'testing',
-      statusMsg: 'VALIDATING',
-      log: '[INFO] Sweeping TX power output settings: checking linearity and spectral mask compliance...',
-      logClass: '',
-      metrics: { rssi: '-38 dBm', snr: '38 dB', per: '0.00%' }
-    },
-    {
-      progress: 90,
-      status: 'testing',
-      statusMsg: 'GENERATING REPT',
-      log: '[SUCCESS] Harmonic emissions margin verified [Second: -52 dBc | Third: -61 dBc]. Pass.',
-      logClass: 'log-success',
-      metrics: { rssi: '-40 dBm', snr: '36 dB', per: '0.00%' }
+      statusMsg: 'PATH LOSS SWEEP',
+      log: [
+        { text: '[INFO] Measuring throughput curves (MCS0-MCS11) vs Path Loss...', class: '' },
+        { text: '[INFO] Path Loss 30dB (RSSI -60dBm) -> Throughput: 718 Mbps [Pass]', class: '' },
+        { text: '[INFO] Path Loss 60dB (RSSI -80dBm) -> Throughput: 185 Mbps [Pass]', class: '' },
+        { text: '[INFO] Path Loss 85dB (RSSI -90dBm) -> Throughput: 12 Mbps [Pass]', class: '' },
+        { text: '[SUCCESS] Link budget and path loss throughput limits verified within spec.', class: 'log-success' }
+      ],
+      metrics: { rssi: '-90 dBm', snr: '7 dB', per: '0.82%' }
     },
     {
       progress: 95,
       status: 'testing',
-      statusMsg: 'GENERATING REPT',
-      log: '[INFO] Computing comprehensive RSSI/SNR histograms and packet throughput matrices...',
-      logClass: '',
-      metrics: { rssi: '-40 dBm', snr: '36 dB', per: '0.00%' }
+      statusMsg: 'TEARDOWN & CLEANUP',
+      log: [
+        { text: '[INFO] Test suite completed. Commencing container and hardware shutdown...', class: '' },
+        { text: '[INFO] Disabling instrument RF outputs. Powering down DUT-084X...', class: '' },
+        { text: '[INFO] Stopping Docker container \'hil_runner_084x\'...', class: '' },
+        { text: '[SUCCESS] Docker container and virtual networks successfully pruned.', class: 'log-success' },
+        { text: '[INFO] Archiving telemetry data, JUnit XML reports, and console logs...', class: '' }
+      ],
+      metrics: { rssi: '-- dBm', snr: '-- dB', per: '--%' }
     },
     {
       progress: 100,
       status: 'active',
       statusMsg: 'SYSTEM ONLINE',
-      log: '[SUCCESS] HIL SYSTEM TEST COMPLETE: All compliance constraints and RF performance specs PASSED.',
-      logClass: 'log-success',
-      metrics: { rssi: '-39 dBm', snr: '37 dB', per: '0.00%' }
+      log: [
+        { text: '[SUCCESS] HIL SYSTEM TEST COMPLETE: All compliance constraints and RF performance specs PASSED.', class: 'log-success' }
+      ],
+      metrics: { rssi: '-38 dBm', snr: '36 dB', per: '0.00%' }
     }
   ];
 
@@ -293,11 +302,15 @@ function initValidationDashboard() {
       metricSnr.textContent = step.metrics.snr;
       metricPer.textContent = step.metrics.per;
 
-      // Append Terminal Log
-      const logDiv = document.createElement('div');
-      logDiv.className = `log-line ${step.logClass}`;
-      logDiv.textContent = step.log;
-      termLogs.appendChild(logDiv);
+      // Append Terminal Log(s)
+      const logs = Array.isArray(step.log) ? step.log : [{ text: step.log, class: step.logClass || '' }];
+      logs.forEach(logObj => {
+        const logLine = typeof logObj === 'string' ? { text: logObj, class: '' } : logObj;
+        const logDiv = document.createElement('div');
+        logDiv.className = `log-line ${logLine.class || ''}`;
+        logDiv.textContent = logLine.text;
+        termLogs.appendChild(logDiv);
+      });
 
       // Auto-scroll terminal
       termLogs.scrollTop = termLogs.scrollHeight;
@@ -305,9 +318,9 @@ function initValidationDashboard() {
       currentStep++;
 
       // Timing delay based on stage for realistic flow
-      let delay = 1200;
-      if (step.progress === 70 || step.progress === 80) delay = 1800; // longer for intensive tests
-      if (step.progress === 95) delay = 1500;
+      let delay = 1500;
+      if (step.progress === 55 || step.progress === 70) delay = 2200; // longer for intensive scans
+      if (step.progress === 85) delay = 2000;
 
       setTimeout(nextStep, delay);
     }
@@ -319,14 +332,19 @@ function initValidationDashboard() {
   runBtn.addEventListener('click', runSimulatedTest);
 }
 
-/* --- High-Tech Contact Form Verification --- */
+/* --- High-Tech Contact Form Verification & Integration --- */
 function initContactForm() {
   const form = document.getElementById('contact-form');
   const resultDiv = document.getElementById('form-result');
 
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  // TO MAKE THIS FORM DELIVER REAL EMAILS:
+  // 1. Go to https://web3forms.com and enter your email to get a free Access Key.
+  // 2. Paste your Access Key into the constant below:
+  const WEB3FORMS_ACCESS_KEY = "e853e568-6cf0-4192-a6d9-c54ac632967a"; 
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -336,30 +354,78 @@ function initContactForm() {
 
     // Loading State Visual Cue
     submitBtn.disabled = true;
-    submitBtn.textContent = 'TRANSMITTING MESSAGE DATA...';
+    submitBtn.textContent = 'TRANSMITTING SECURE MESSAGE...';
+    resultDiv.style.display = 'none';
 
-    // Simulate network transmission delay
-    setTimeout(() => {
-      submitBtn.textContent = 'TRANSMISSION COMPLETE';
-      
-      // Beautiful glowing feedback
-      resultDiv.className = 'form-result success';
+    if (WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY_HERE") {
+      // Fallback: Simulation mode with a helpful tip
+      setTimeout(() => {
+        submitBtn.textContent = 'TRANSMISSION COMPLETE';
+        
+        resultDiv.className = 'form-result success';
+        resultDiv.innerHTML = `
+          <strong>[SIMULATION MODE ACTIVE]</strong><br>
+          Thank you, ${name}! Your test transmission was successful.<br>
+          <span style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px; display: block;">
+            💡 <strong>To make this form deliver real emails:</strong> Register for a free access key at <a href="https://web3forms.com" target="_blank" style="color: hsl(var(--primary-cyan)); text-decoration: underline;">Web3Forms</a> and add it to <code>app.js</code>.
+          </span>
+        `;
+        resultDiv.style.display = 'block';
+        form.reset();
+
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Transmit Secure Inquiry';
+        }, 4000);
+      }, 1500);
+      return;
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          name: name,
+          email: email,
+          message: details,
+          subject: `New Client Inquiry from ${name} (${email})`
+        })
+      });
+
+      const json = await response.json();
+      if (response.status === 200) {
+        submitBtn.textContent = 'TRANSMISSION COMPLETE';
+        resultDiv.className = 'form-result success';
+        resultDiv.innerHTML = `
+          <strong>[TRANSMISSION CAPTURED]</strong><br>
+          Thank you, ${name}. Your inquiry has been routed directly to our hardware & wireless validation engineering desk. 
+          A Black Alder representative will respond to <strong>${email}</strong> shortly.
+        `;
+        resultDiv.style.display = 'block';
+        form.reset();
+      } else {
+        throw new Error(json.message || "Endpoint error");
+      }
+    } catch (error) {
+      console.error(error);
+      submitBtn.textContent = 'TRANSMISSION FAILED';
+      resultDiv.className = 'form-result error';
       resultDiv.innerHTML = `
-        <strong>[TRANSMISSION CAPTURED]</strong><br>
-        Thank you, ${name}. Your inquiry has been routed directly to our hardware & wireless validation engineering desk. 
-        A Black Alder representative will respond to <strong>${email}</strong> shortly.
+        <strong>[TRANSMISSION ERROR]</strong><br>
+        Failed to transmit data: ${error.message}. Please reach out directly to 
+        <a href="mailto:black.alder.tech@gmail.com" style="color: inherit; text-decoration: underline;">black.alder.tech@gmail.com</a>.
       `;
       resultDiv.style.display = 'block';
-
-      // Clear inputs
-      form.reset();
-      
-      // Reset button after a brief period
+    } finally {
       setTimeout(() => {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'TRANSMIT SECURE INQUIRY';
+        submitBtn.textContent = 'Transmit Secure Inquiry';
       }, 4000);
-
-    }, 1800);
+    }
   });
 }
