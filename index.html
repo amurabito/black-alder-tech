@@ -223,22 +223,25 @@
           <div class="dash-grid">
             <div class="dash-metric">
               <div class="dash-metric-lbl">Signal (RSSI)</div>
-              <div class="dash-metric-val active-cyan" id="metric-rssi">-- dBm</div>
+              <div class="dash-metric-val muted" id="metric-rssi">-- dBm</div>
             </div>
             <div class="dash-metric">
               <div class="dash-metric-lbl">Margin (SNR)</div>
-              <div class="dash-metric-val active-purple" id="metric-snr">-- dB</div>
+              <div class="dash-metric-val muted" id="metric-snr">-- dB</div>
             </div>
             <div class="dash-metric">
               <div class="dash-metric-lbl">Packet Error</div>
-              <div class="dash-metric-val" style="color: #64748b;" id="metric-per">--%</div>
+              <div class="dash-metric-val muted" id="metric-per">--%</div>
             </div>
           </div>
 
           <!-- Scrolling Terminal -->
-          <div class="dash-terminal" id="terminal-logs">
-            <div class="log-line">[SYSTEM READY] Waiting for secure user instruction...</div>
-            <div class="log-line">Press "Run Automated Test" in controls panel to trigger execution sequence.</div>
+          <div class="dash-terminal-container">
+            <div class="dash-terminal" id="terminal-logs">
+              <div class="log-line">[SYSTEM READY] Waiting for secure user instruction...</div>
+              <div class="log-line">Press "Run Automated Test" in controls panel to trigger execution sequence.</div>
+            </div>
+            <div class="dash-terminal-overlay"></div>
           </div>
 
           <!-- Control bar with progress -->

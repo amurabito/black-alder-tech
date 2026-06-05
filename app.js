@@ -171,162 +171,187 @@ function initValidationDashboard() {
 
   if (!runBtn) return;
 
-  const testSteps = [
-    {
-      progress: 10,
-      status: 'testing',
-      statusMsg: 'SETUP CONTAINER',
-      log: [
-        { text: '[INFO] Initializing HIL test controller workspace...', class: '' },
-        { text: '[INFO] Spinning up Docker service container: black-alder-hil-runner:v3.2.1', class: '' },
-        { text: '[SUCCESS] Docker container \'hil_runner_084x\' created (sha256:8f410c9d...)', class: 'log-success' },
-        { text: '[INFO] Volume mount: host:/opt/hil/config -> container:/etc/hil/config (ro)', class: '' },
-        { text: '[INFO] Attaching container to overlay network \'hil_lan_bridge\' (172.20.0.0/16)', class: '' }
-      ],
-      metrics: { rssi: '-- dBm', snr: '-- dB', per: '--%' }
-    },
-    {
-      progress: 25,
-      status: 'testing',
-      statusMsg: 'LOCKING RF SYNTH',
-      log: [
-        { text: '[INFO] Connecting via VISA interface to local RF instrumentation...', class: '' },
-        { text: '[INFO] Keysight MXG: Tuning and locking local oscillators to 2.445 GHz...', class: '' },
-        { text: '[SUCCESS] RF instrument phase-locked loop (PLL) verified. [Err < 1.5 ppm]', class: 'log-success' },
-        { text: '[INFO] Powering on Device Under Test (DUT-084X) via PoE injector...', class: '' }
-      ],
-      metrics: { rssi: '-105 dBm', snr: '2 dB', per: '100%' }
-    },
-    {
-      progress: 40,
-      status: 'testing',
-      statusMsg: 'FLASHING FIRMWARE',
-      log: [
-        { text: '[INFO] Uploading golden image firmware (v4.0.1-rc3) to SoC flash over JTAG...', class: '' },
-        { text: '[SUCCESS] Firmware write and verify complete. Booting DUT...', class: 'log-success' },
-        { text: '[INFO] UART console output matched: \'System Ready; L2/L3 stack initialized\'', class: '' }
-      ],
-      metrics: { rssi: '-98 dBm', snr: '5 dB', per: '100%' }
-    },
-    {
-      progress: 55,
-      status: 'testing',
-      statusMsg: 'PRE-COMPLIANCE RUN',
-      log: [
-        { text: '[INFO] Starting pre-conformance readiness sweep for regional domains (FCC/ETSI)...', class: '' },
-        { text: '[INFO] Auditing channel selection algorithms and active DFS detection latency...', class: '' },
-        { text: '[SUCCESS] DFS channel switch announcement (CSA) compliance validated. [Latency < 180ms]', class: 'log-success' },
-        { text: '[INFO] Simulating WFA-conformance Layer 2 association checks (WPA3-SAE, 802.11ax)...', class: '' },
-        { text: '[SUCCESS] Simulated association complete. IP: 172.20.10.15 [DHCP success]', class: 'log-success' }
-      ],
-      metrics: { rssi: '-42 dBm', snr: '34 dB', per: '0.01%' }
-    },
-    {
-      progress: 70,
-      status: 'testing',
-      statusMsg: 'COEX & OTA RUN',
-      log: [
-        { text: '[INFO] Running WLAN/BT coexistence (coex) stress-test [WLAN TX 80% duty, BT RX]', class: '' },
-        { text: '[WARN] Coex interference detected: Bluetooth packet loss increased to 4.2%', class: 'log-warn' },
-        { text: '[INFO] Applying coex mitigation profile (AFH enabled, priority-pinning active)...', class: '' },
-        { text: '[SUCCESS] Coexistence validated. Bluetooth packet error rate stabilized.', class: 'log-success' },
-        { text: '[INFO] Simulating OTA radiated path loss: ramping attenuators from 10dB to 60dB...', class: '' }
-      ],
-      metrics: { rssi: '-85 dBm', snr: '12 dB', per: '4.2%' }
-    },
-    {
-      progress: 85,
-      status: 'testing',
-      statusMsg: 'PATH LOSS SWEEP',
-      log: [
-        { text: '[INFO] Measuring throughput curves (MCS0-MCS11) vs Path Loss...', class: '' },
-        { text: '[INFO] Path Loss 30dB (RSSI -60dBm) -> Throughput: 718 Mbps [Pass]', class: '' },
-        { text: '[INFO] Path Loss 60dB (RSSI -80dBm) -> Throughput: 185 Mbps [Pass]', class: '' },
-        { text: '[INFO] Path Loss 85dB (RSSI -90dBm) -> Throughput: 12 Mbps [Pass]', class: '' },
-        { text: '[SUCCESS] Link budget and path loss throughput limits verified within spec.', class: 'log-success' }
-      ],
-      metrics: { rssi: '-90 dBm', snr: '7 dB', per: '0.82%' }
-    },
-    {
-      progress: 95,
-      status: 'testing',
-      statusMsg: 'TEARDOWN & CLEANUP',
-      log: [
-        { text: '[INFO] Test suite completed. Commencing container and hardware shutdown...', class: '' },
-        { text: '[INFO] Disabling instrument RF outputs. Powering down DUT-084X...', class: '' },
-        { text: '[INFO] Stopping Docker container \'hil_runner_084x\'...', class: '' },
-        { text: '[SUCCESS] Docker container and virtual networks successfully pruned.', class: 'log-success' },
-        { text: '[INFO] Archiving telemetry data, JUnit XML reports, and console logs...', class: '' }
-      ],
-      metrics: { rssi: '-- dBm', snr: '-- dB', per: '--%' }
-    },
-    {
-      progress: 100,
-      status: 'active',
-      statusMsg: 'SYSTEM ONLINE',
-      log: [
-        { text: '[SUCCESS] HIL SYSTEM TEST COMPLETE: All compliance constraints and RF performance specs PASSED.', class: 'log-success' }
-      ],
-      metrics: { rssi: '-38 dBm', snr: '36 dB', per: '0.00%' }
-    }
+  const simulationSequence = [
+    // SETUP CONTAINER
+    { text: '[SYSTEM] Initializing HIL validation workspace...', progress: 1, status: 'SETUP CONTAINER', statusClass: 'testing', delay: 80 },
+    { text: '[SYSTEM] Loading client test plan profile: black-alder-compliance-spec-v3', progress: 3, status: 'SETUP CONTAINER', delay: 90 },
+    { text: '[SYSTEM] Instantiating isolated Docker service container...', progress: 5, status: 'SETUP CONTAINER', delay: 120 },
+    { text: '[SYSTEM] Docker image: black-alder-hil-runner:v3.2.1-mfg-prod', progress: 7, status: 'SETUP CONTAINER', delay: 80 },
+    { text: '[SYSTEM] Mounting system volume: host:/opt/hil/config -> container:/etc/hil/config (ro)', progress: 9, status: 'SETUP CONTAINER', delay: 80 },
+    { text: '[SYSTEM] Attaching container interface eth0 to overlay network \'hil_lan_bridge\'', progress: 11, status: 'SETUP CONTAINER', delay: 110 },
+    { text: '[SUCCESS] Docker service container \'hil_runner_084x\' booted. [ID: 8f410c9d]', class: 'log-success', progress: 13, status: 'SETUP CONTAINER', delay: 150 },
+
+    // LOCKING RF SYNTH
+    { text: '[INSTRUMENT] Scanning system interfaces for physical instrumentation...', progress: 15, status: 'LOCKING RF SYNTH', delay: 140 },
+    { text: '[INSTRUMENT] Found VISA interface: GPIB0::16::INSTR (Keysight N5182B MXG)', progress: 17, status: 'LOCKING RF SYNTH', delay: 100 },
+    { text: '[INSTRUMENT] Commencing phase lock protocol with Keysight MXG synthesizer...', progress: 19, status: 'LOCKING RF SYNTH', delay: 180 },
+    { text: '[INSTRUMENT] Tuning RF synthesizer output to 2.445 GHz (WLAN Channel 7)...', progress: 21, status: 'LOCKING RF SYNTH', delay: 200 },
+    { text: '[INSTRUMENT] RF signal generator output level set to initial -40.0 dBm', progress: 23, status: 'LOCKING RF SYNTH', delay: 100 },
+    { text: '[SUCCESS] Synthesizer phase-locked loop (PLL) verified. [Freq error < 1.1 ppm]', class: 'log-success', progress: 26, status: 'LOCKING RF SYNTH', rssi: -105, snr: 2, per: 100, delay: 160 },
+    { text: '[SYSTEM] Energizing Device Under Test (DUT-084X) via PoE Injector Port 4...', progress: 28, status: 'LOCKING RF SYNTH', delay: 350 },
+
+    // FLASHING FIRMWARE
+    { text: '[JTAG] Establishing high-speed SWD communications link (4000 kHz)...', progress: 30, status: 'FLASHING FIRMWARE', delay: 150 },
+    { text: '[JTAG] Processor detected: ARM Cortex-M7 core active.', progress: 32, status: 'FLASHING FIRMWARE', delay: 90 },
+    { text: '[JTAG] Clearing target flash sectors 0x08000000 - 0x080FFFFF...', progress: 35, status: 'FLASHING FIRMWARE', delay: 280 },
+    { text: '[JTAG] Flashing golden firmware binary: compliance_v4.0.1_rc3.bin...', progress: 38, status: 'FLASHING FIRMWARE', delay: 450 },
+    { text: '[SUCCESS] Flash write completed and verified via CRC32 check [CRC: 0xF3B07A11]', class: 'log-success', progress: 41, status: 'FLASHING FIRMWARE', delay: 180 },
+    { text: '[DUT] Releasing JTAG reset pin. Bootloader active.', progress: 43, status: 'FLASHING FIRMWARE', delay: 100 },
+    { text: '[DUT] Bootstrapping kernel. Loading device drivers...', progress: 45, status: 'FLASHING FIRMWARE', delay: 120 },
+    { text: '[DUT] Console output captured: \'System Ready; L2/L3 wireless stack initialized\'', progress: 47, status: 'FLASHING FIRMWARE', rssi: -98, snr: 5, per: 100, delay: 140 },
+
+    // PRE-COMPLIANCE RUN
+    { text: '[TEST] Launching regional domain regulatory pre-scan (FCC/ETSI rules)...', progress: 50, status: 'PRE-COMPLIANCE RUN', delay: 160 },
+    { text: '[TEST] Auditing passive/active DFS channel selection response curves...', progress: 52, status: 'PRE-COMPLIANCE RUN', delay: 200 },
+    { text: '[SUCCESS] DFS Radar signature simulated. Channel Switch Announcement verified in 142ms', class: 'log-success', progress: 55, status: 'PRE-COMPLIANCE RUN', rssi: -42, snr: 34, per: 0.01, delay: 180 },
+    { text: '[TEST] Running Layer 2 association test (802.11ax, WPA3-SAE handshake)...', progress: 57, status: 'PRE-COMPLIANCE RUN', delay: 180 },
+    { text: '[SUCCESS] Association complete. Handshake timing = 42.1ms (Pass)', class: 'log-success', progress: 59, status: 'PRE-COMPLIANCE RUN', delay: 100 },
+    { text: '[DUT] Requesting IP address... DHCP lease acquired: 172.20.10.15 [DHCP server: 172.20.10.1]', progress: 61, status: 'PRE-COMPLIANCE RUN', delay: 150 },
+
+    // COEX & OTA RUN
+    { text: '[TEST] Activating coex stress module: WLAN TX (85% duty cycle) + Bluetooth RX', progress: 64, status: 'COEX & OTA RUN', delay: 200 },
+    { text: '[WARNING] Coexistence interference: Bluetooth packet loss spiked to 4.8%', class: 'log-warn', progress: 67, status: 'COEX & OTA RUN', rssi: -85, snr: 12, per: 4.8, delay: 350 },
+    { text: '[TEST] Deploying dynamic AFH (Adaptive Frequency Hopping) tuning matrix...', progress: 69, status: 'COEX & OTA RUN', delay: 150 },
+    { text: '[TEST] Enabling priority pinning on DUT hardware interfaces GPIO_12/GPIO_13...', progress: 71, status: 'COEX & OTA RUN', delay: 120 },
+    { text: '[SUCCESS] Coexistence mitigation resolved. Bluetooth packet error rate stabilized at 0.5%', class: 'log-success', progress: 74, status: 'COEX & OTA RUN', per: 0.5, delay: 250 },
+
+    // PATH LOSS SWEEP
+    { text: '[TEST] Commencing automated RF path loss sweep (attenuation 10dB -> 90dB)...', progress: 77, status: 'PATH LOSS SWEEP', delay: 220 },
+    { text: '[TEST] Measuring receiver throughput curves (MCS0-MCS11) vs Path Loss...', progress: 79, status: 'PATH LOSS SWEEP', delay: 100 },
+    { text: '[DATA] Sweep Step 1: Path Loss 30dB (RSSI -60dBm) -> Throughput: 724 Mbps [Pass]', progress: 81, status: 'PATH LOSS SWEEP', rssi: -60, snr: 30, per: 0.0, delay: 160 },
+    { text: '[DATA] Sweep Step 2: Path Loss 60dB (RSSI -80dBm) -> Throughput: 192 Mbps [Pass]', progress: 84, status: 'PATH LOSS SWEEP', rssi: -80, snr: 18, per: 0.05, delay: 160 },
+    { text: '[DATA] Sweep Step 3: Path Loss 85dB (RSSI -90dBm) -> Throughput: 14 Mbps [Pass]', progress: 87, status: 'PATH LOSS SWEEP', rssi: -90, snr: 7, per: 0.85, delay: 160 },
+    { text: '[SUCCESS] RX sensitivity and throughput limits conform to client specifications.', class: 'log-success', progress: 90, status: 'PATH LOSS SWEEP', delay: 200 },
+
+    // TEARDOWN & CLEANUP
+    { text: '[SYSTEM] All automated test scripts executed. Initializing cleanup sequence...', progress: 92, status: 'TEARDOWN & CLEANUP', delay: 120 },
+    { text: '[SYSTEM] Disabling GPIB synthesizer outputs. Powering down DUT-084X...', progress: 94, status: 'TEARDOWN & CLEANUP', rssi: null, snr: null, per: null, delay: 150 },
+    { text: '[SYSTEM] Stopping Docker service container \'hil_runner_084x\'...', progress: 96, status: 'TEARDOWN & CLEANUP', delay: 120 },
+    { text: '[SUCCESS] Docker container and overlay network bridges successfully pruned.', class: 'log-success', progress: 98, status: 'TEARDOWN & CLEANUP', delay: 140 },
+    { text: '[SYSTEM] Archiving raw RF telemetry data, JUnit results, and console logs...', progress: 99, status: 'TEARDOWN & CLEANUP', delay: 180 },
+
+    // SYSTEM ONLINE
+    { text: '[SUCCESS] HIL CONFORMANCE TEST COMPLETED SUCCESSFULLY. STATUS: PASS.', class: 'log-success', progress: 100, status: 'SYSTEM ONLINE', statusClass: 'active', rssi: -38, snr: 36, per: 0.0, delay: 400 }
   ];
+
+  const TEST_RUN_DURATION_MS = 60000;
+  const baseSequenceDuration = simulationSequence.reduce((total, step) => total + (step.delay || 120), 0);
+  const delayScale = TEST_RUN_DURATION_MS / baseSequenceDuration;
+
+  let currentMetrics = { rssi: null, snr: null, per: null };
+  let targetMetrics = { rssi: null, snr: null, per: null };
+  let telemetryInterval = null;
+
+  function startTelemetryUpdates() {
+    if (telemetryInterval) clearInterval(telemetryInterval);
+    telemetryInterval = setInterval(() => {
+      // RSSI
+      if (targetMetrics.rssi !== null) {
+        if (currentMetrics.rssi === null) currentMetrics.rssi = targetMetrics.rssi;
+        currentMetrics.rssi += (targetMetrics.rssi - currentMetrics.rssi) * 0.15;
+        const noise = (Math.random() - 0.5) * 0.4;
+        const val = currentMetrics.rssi + noise;
+        metricRssi.textContent = `${val.toFixed(1)} dBm`;
+        metricRssi.className = 'dash-metric-val cyan';
+      } else {
+        currentMetrics.rssi = null;
+        metricRssi.textContent = '-- dBm';
+        metricRssi.className = 'dash-metric-val muted';
+      }
+
+      // SNR
+      if (targetMetrics.snr !== null) {
+        if (currentMetrics.snr === null) currentMetrics.snr = targetMetrics.snr;
+        currentMetrics.snr += (targetMetrics.snr - currentMetrics.snr) * 0.15;
+        const noise = (Math.random() - 0.5) * 0.3;
+        const val = currentMetrics.snr + noise;
+        metricSnr.textContent = `${val.toFixed(1)} dB`;
+        metricSnr.className = 'dash-metric-val purple';
+      } else {
+        currentMetrics.snr = null;
+        metricSnr.textContent = '-- dB';
+        metricSnr.className = 'dash-metric-val muted';
+      }
+
+      // PER
+      if (targetMetrics.per !== null) {
+        if (currentMetrics.per === null) currentMetrics.per = targetMetrics.per;
+        currentMetrics.per += (targetMetrics.per - currentMetrics.per) * 0.15;
+        const noise = (Math.random() - 0.5) * 0.06;
+        let val = currentMetrics.per + noise;
+        if (val < 0) val = 0;
+        metricPer.textContent = `${val.toFixed(2)}%`;
+        
+        if (val >= 10) {
+          metricPer.className = 'dash-metric-val red';
+        } else if (val > 0.05) {
+          metricPer.className = 'dash-metric-val orange';
+        } else {
+          metricPer.className = 'dash-metric-val green';
+        }
+      } else {
+        currentMetrics.per = null;
+        metricPer.textContent = '--%';
+        metricPer.className = 'dash-metric-val muted';
+      }
+    }, 60);
+  }
 
   function runSimulatedTest() {
     runBtn.disabled = true;
     termLogs.innerHTML = '';
-    progressBar.style.width = '0%';
     
-    // Set initial testing visual state
+    // Create & append cursor
+    const cursor = document.createElement('div');
+    cursor.className = 'log-line console-cursor';
+    cursor.textContent = '█';
+    termLogs.appendChild(cursor);
+
+    progressBar.style.width = '0%';
     statusDot.className = 'dash-status-dot testing';
     statusText.textContent = 'TEST IN PROGRESS';
 
-    let currentStep = 0;
+    // Reset values for start
+    targetMetrics = { rssi: null, snr: null, per: null };
+    currentMetrics = { rssi: null, snr: null, per: null };
+    startTelemetryUpdates();
 
-    function nextStep() {
-      if (currentStep >= testSteps.length) {
+    let currentIndex = 0;
+
+    function printNextLine() {
+      if (currentIndex >= simulationSequence.length) {
         runBtn.disabled = false;
         return;
       }
 
-      const step = testSteps[currentStep];
+      const step = simulationSequence[currentIndex];
 
-      // Update progress bar width
+      // Update progress
       progressBar.style.width = `${step.progress}%`;
 
-      // Update Status Indicator
-      statusDot.className = `dash-status-dot ${step.status}`;
-      statusText.textContent = step.statusMsg;
+      // Update status
+      statusDot.className = `dash-status-dot ${step.statusClass || 'testing'}`;
+      statusText.textContent = step.status;
 
-      // Update Metrics
-      metricRssi.textContent = step.metrics.rssi;
-      metricSnr.textContent = step.metrics.snr;
-      metricPer.textContent = step.metrics.per;
+      // Update target metrics
+      if (step.rssi !== undefined) targetMetrics.rssi = step.rssi;
+      if (step.snr !== undefined) targetMetrics.snr = step.snr;
+      if (step.per !== undefined) targetMetrics.per = step.per;
 
-      // Append Terminal Log(s)
-      const logs = Array.isArray(step.log) ? step.log : [{ text: step.log, class: step.logClass || '' }];
-      logs.forEach(logObj => {
-        const logLine = typeof logObj === 'string' ? { text: logObj, class: '' } : logObj;
-        const logDiv = document.createElement('div');
-        logDiv.className = `log-line ${logLine.class || ''}`;
-        logDiv.textContent = logLine.text;
-        termLogs.appendChild(logDiv);
-      });
+      // Create new line div and insert it before the cursor
+      const logDiv = document.createElement('div');
+      logDiv.className = `log-line ${step.class || ''}`;
+      logDiv.textContent = step.text;
+      termLogs.insertBefore(logDiv, cursor);
 
-      // Auto-scroll terminal
+      // Scroll to bottom
       termLogs.scrollTop = termLogs.scrollHeight;
 
-      currentStep++;
-
-      // Timing delay based on stage for realistic flow
-      let delay = 1500;
-      if (step.progress === 55 || step.progress === 70) delay = 2200; // longer for intensive scans
-      if (step.progress === 85) delay = 2000;
-
-      setTimeout(nextStep, delay);
+      currentIndex++;
+      setTimeout(printNextLine, (step.delay || 120) * delayScale);
     }
 
-    // Begin sequence
-    nextStep();
+    printNextLine();
   }
 
   runBtn.addEventListener('click', runSimulatedTest);
