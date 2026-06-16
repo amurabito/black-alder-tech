@@ -61,9 +61,10 @@ function initRFVisualizer() {
   // Set canvas resolution
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   
   resizeCanvas();
@@ -84,31 +85,29 @@ function initRFVisualizer() {
     ampVal.textContent = `${amp} dBm`;
 
     // Draw grid background
-    ctx.strokeStyle = '#111827';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
     ctx.lineWidth = 1;
+    ctx.beginPath();
     for (let x = 0; x < width; x += 40) {
-      ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, height);
-      ctx.stroke();
     }
     for (let y = 0; y < height; y += 40) {
-      ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);
-      ctx.stroke();
     }
+    ctx.stroke();
 
     // Draw center baseline
-    ctx.strokeStyle = '#1e293b';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     ctx.beginPath();
     ctx.moveTo(0, height / 2);
     ctx.lineTo(width, height / 2);
     ctx.stroke();
 
-    // 1. Draw Primary RF Carrier Wave (electric cyan glow)
-    ctx.strokeStyle = '#00f2fe';
-    ctx.shadowColor = '#00f2fe';
+    // 1. Draw Primary RF Carrier Wave (electric gold glow)
+    ctx.strokeStyle = '#f5b014';
+    ctx.shadowColor = '#f5b014';
     ctx.shadowBlur = 10;
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -128,9 +127,9 @@ function initRFVisualizer() {
     }
     ctx.stroke();
 
-    // 2. Draw Secondary Out-of-Phase/Reflected wave (muted purple, thinner)
+    // 2. Draw Secondary Out-of-Phase/Reflected wave (muted bronze, thinner)
     ctx.shadowBlur = 0; // Disable shadow for secondary wave to avoid lag
-    ctx.strokeStyle = 'rgba(147, 51, 234, 0.4)';
+    ctx.strokeStyle = 'rgba(217, 119, 6, 0.4)';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
 

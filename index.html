@@ -7,7 +7,26 @@
   <meta name="keywords" content="Wireless Consulting, RF Engineering, Embedded Wireless, Validation Systems, HIL Testing, BLE, Wi-Fi 7, WLAN Coexistence, Protocol Conformance, Hardware Engineering">
   <meta name="author" content="Black Alder Technology LLC">
   <title>Black Alder Technology LLC | Consulting & Wireless Validation Systems</title>
+
+  <!-- Open Graph / Facebook Metadata -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blackalder.ext.io">
+  <meta property="og:title" content="Black Alder Technology LLC | Consulting & Wireless Validation Systems">
+  <meta property="og:description" content="Elite engineering consulting and custom automated Hardware-in-the-Loop (HIL) validation systems for embedded wireless and RF products.">
+  <meta property="og:image" content="https://blackalder.ext.io/assets/blackalder-social.png">
+
+  <!-- Twitter Metadata -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://blackalder.ext.io">
+  <meta name="twitter:title" content="Black Alder Technology LLC | Consulting & Wireless Validation Systems">
+  <meta name="twitter:description" content="Elite engineering consulting and custom automated Hardware-in-the-Loop (HIL) validation systems for embedded wireless and RF products.">
+  <meta name="twitter:image" content="https://blackalder.ext.io/assets/blackalder-social.png">
   
+  <!-- Favicon / Apple Touch Icon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/blackalder-clean.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/blackalder-clean.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/blackalder-clean.png">
+
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -21,20 +40,8 @@
   <header>
     <div class="nav-container">
       <a href="#home" class="logo">
-        <svg viewBox="0 0 32 32">
-          <defs>
-            <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00f2fe" />
-              <stop offset="100%" stop-color="#9333ea" />
-            </linearGradient>
-          </defs>
-          <!-- Stylized high-tech geometric leaf/signal icon -->
-          <path d="M16 2 L26 12 L20 12 L28 22 L16 22 L16 30 L16 22 L4 22 L12 12 L6 12 Z" />
-          <circle cx="16" cy="12" r="2" fill="#00f2fe" />
-          <circle cx="20" cy="18" r="1.5" fill="#9333ea" />
-          <circle cx="12" cy="18" r="1.5" fill="#9333ea" />
-        </svg>
-        <span>Black Alder <span class="gradient-text">Technology</span></span>
+        <img src="assets/blackalder-clean.png" alt="Black Alder Technology" class="logo-img">
+        <span>Black Alder Technology</span>
       </a>
 
       <button class="menu-btn" aria-label="Toggle Navigation Menu">
@@ -58,8 +65,8 @@
   <section id="home" class="hero">
     <div class="hero-grid">
       <div class="hero-content">
-        <span class="tech-label">[ EMBEDDED WIRELESS ENGINEERING ]</span>
-        <h1>Precision Validation.<br>Seamless Connectivity.<br><span class="gradient-text">Elite RF Engineering.</span></h1>
+        <span class="tech-label">[ EMBEDDED SYSTEMS & WIRELESS ENGINEERING ]</span>
+        <h1>Embedded Systems Validation.<br>Seamless Connectivity.<br><span class="gradient-text">Elite RF Engineering.</span></h1>
         <p>Black Alder Technology LLC designs bespoke automated validation systems and offers expert engineering consulting to transition complex wireless products from prototype to global market certification.</p>
         <div class="hero-btns">
           <a href="#dashboard" class="btn btn-primary">Test Live Platform</a>
@@ -90,36 +97,62 @@
     <div class="section-header">
       <span class="tech-label">[ CAPABILITIES ]</span>
       <h2>Core Engineering Services</h2>
-      <p>Providing high-precision hardware and software solutions optimized for the demands of modern wireless ecosystems.</p>
+      <p>Providing high-precision embedded systems, firmware, and wireless hardware solutions optimized for complex product ecosystems.</p>
     </div>
 
     <div class="services-grid">
-      <!-- Card 1: Automated Test Systems -->
+      <!-- Card 1: Engineering Productivity & HIL Automation -->
       <div class="service-card">
         <div class="service-icon-box">
           <svg viewBox="0 0 24 24">
             <path d="M4 6h16M4 10h16M4 14h12M4 18h8M19 14l3 3-3 3M22 17h-6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h3>Automated Validation Systems</h3>
-        <p>Design and deployment of custom Hardware-in-the-Loop (HIL) validation systems. We integrate programmable RF attenuators, Python automation, and modern CI/CD pipelines to validate complex product interfaces and software states autonomously.</p>
+        <h3>Engineering Productivity & HIL Automation</h3>
+        <p>Design and deployment of containerized Hardware-in-the-Loop (HIL) automation systems. We transition complex embedded systems and product validation from serial execution into parallelized CI/CD test runners that accelerate release readiness.</p>
         <ul class="service-features">
           <li>
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            GitHub Actions & Jenkins CI Integration
+            Parallelized CI/CD & Build Orchestration
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Dockerized Microservice Test Runners
+            Containerized Microservice Test Runners
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Python-Based Automation Suites
+            Custom HIL & RF Attenuation Infrastructure
           </li>
         </ul>
       </div>
 
-      <!-- Card 2: Embedded SoC & Wireless Characterization -->
+      <!-- Card 2: AI-Assisted Diagnostics & Observability -->
+      <div class="service-card">
+        <div class="service-icon-box">
+          <svg viewBox="0 0 24 24">
+            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3.5 3.5 0 0 1 0-3.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3.5 3.5 0 0 0 0-3.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>AI-Assisted Diagnostics & Observability</h3>
+        <p>Build production-grade AI diagnostic agents and telemetry pipelines for complex embedded systems. We automate root-cause analysis by parsing firmware logs, kernel events, and network telemetry to proactively surface release risk.</p>
+        <ul class="service-features">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            AI-Augmented Triage & Diagnostics
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Telemetry & Trend Analysis Pipelines
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Automated Log & Root-Cause Parsing
+          </li>
+        </ul>
+      </div>
+
+      <!-- Card 3: Wireless Systems & Protocol Engineering -->
       <div class="service-card">
         <div class="service-icon-box">
           <svg viewBox="0 0 24 24">
@@ -127,8 +160,8 @@
             <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h3>Embedded SoC & Wireless Characterization</h3>
-        <p>Deep characterization and validation of embedded wireless silicon. We specialize in WLAN/Bluetooth coexistence (coex) profiles, OTA radiated measurements, and link budget/path loss modeling.</p>
+        <h3>Wireless Systems & Protocol Engineering</h3>
+        <p>Deep-dive characterization of embedded wireless silicon across firmware, OS drivers, and protocol boundaries. We optimize WLAN/Bluetooth coexistence, debug complex regressions, and audit compliance domains.</p>
         <ul class="service-features">
           <li>
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -136,36 +169,11 @@
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            OTA Radiated Performance characterization
+            Protocol-Level Packet Analysis & Dissectors
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Link Budget & Path Loss modeling
-          </li>
-        </ul>
-      </div>
-
-      <!-- Card 3: Pre-Compliance & Test Readiness -->
-      <div class="service-card">
-        <div class="service-icon-box">
-          <svg viewBox="0 0 24 24">
-            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Pre-Compliance & Test Readiness</h3>
-        <p>Prepare your product for formal regulatory and industry testing. We perform critical pre-scans and test validation focusing on regional parameters (FCC/ETSI), supported frequency domains, dynamic frequency selection (DFS), and protocol readiness to reduce certification risks.</p>
-        <ul class="service-features">
-          <li>
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            FCC / ETSI Parameter Audits
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            DFS & Frequency Domain Verification
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            WFA & Regulatory Test Readiness Prep
+            FCC / ETSI Pre-Compliance & DFS Verification
           </li>
         </ul>
       </div>
@@ -303,8 +311,8 @@
           <div class="about-visual-lbl">Health & Observability</div>
         </div>
         <div class="about-visual-card">
-          <div class="about-visual-num">L2+</div>
-          <div class="about-visual-lbl">Protocol Conformance</div>
+          <div class="about-visual-num">AI-Driven</div>
+          <div class="about-visual-lbl">Diagnostic Tooling</div>
         </div>
         <div class="about-visual-card">
           <div class="about-visual-num">Future</div>
@@ -315,8 +323,8 @@
       <div class="about-content">
         <span class="tech-label">[ ENGINEERING PHILOSOPHY ]</span>
         <h3>Full-Stack Validation & Real-Time Observability</h3>
-        <p>At Black Alder Technology LLC, we believe that validation is critical to software and product health. We deliver robust full-embedded-system validation services led by seasoned industry experts and driven by custom-built automation suites. Our approach prioritizes real-time dashboarding and deep system observability, allowing teams to track performance metrics and device health continuously.</p>
-        <p>By pairing exhaustive Layer 2+ protocol conformance checks with real-time telemetry, we capture transient anomalies before they impact the field. While we specialize in L2 and upper-layer interoperability today, we are actively expanding our testbeds to integrate Layer 1 Vector Signal Generators (VSG) and Vector Signal Analyzers (VSA) for high-fidelity physical-layer auditing.</p>
+        <p>At Black Alder Technology LLC, we believe that validation is critical to software and product health. We deliver robust full-stack embedded systems and wireless validation services led by seasoned industry experts and driven by custom-built automation suites. Our approach prioritizes real-time dashboarding and deep system observability, allowing teams to track performance metrics and device health continuously.</p>
+        <p>By pairing custom telemetry with AI-enhanced diagnostic tooling, we automate log parsing and root-cause analysis to capture transient system anomalies before they impact the field. While we design robust validation suites across firmware, driver, and protocol boundaries, we also leverage intelligent workflows and automated triaging to drastically reduce test execution times and release risks.</p>
       </div>
     </div>
   </section>
@@ -363,9 +371,7 @@
   <footer>
     <div class="footer-container">
       <a href="#home" class="footer-logo">
-        <svg viewBox="0 0 32 32">
-          <path d="M16 2 L26 12 L20 12 L28 22 L16 22 L16 30 L16 22 L4 22 L12 12 L6 12 Z" />
-        </svg>
+        <img src="assets/blackalder-clean.png" alt="Black Alder Technology LLC" class="logo-img">
         <span>Black Alder Technology LLC</span>
       </a>
       <div class="footer-copy">
